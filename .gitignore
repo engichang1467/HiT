@@ -1,7 +1,9 @@
 .DS_Store
 docs/.DS_Store
 exp/
-__pycache__
+**/__pycache__/
+**/*.linux-x86_64-cpython-310/
+**/*.egg-info/
 .ninja_deps
 .ninja_log
 .DS_Store

@@ -1,6 +1,8 @@
 .DS_Store
 docs/.DS_Store
 exp/
+**/claude_logs/
+**/*.so
 **/__pycache__/
 **/*.linux-x86_64-cpython-310/
 **/*.egg-info/

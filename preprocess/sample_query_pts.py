@@ -17,7 +17,7 @@ def process_shape_id(
         npoints=[25000,25000]
     ) -> np.array:
 
-    binvox_filepath = os.path.join(shape_id_path, "voxelized", f"fullmesh_norm.obj_{grid_size}_solid.binvox")
+    binvox_filepath = os.path.join(shape_id_path, "models", "model_normalized.solid.binvox")
     
     with open(binvox_filepath, "rb") as f:
         voxels = read_as_3d_array(f)
@@ -75,7 +75,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--in_data_root", type=str, required=True, help="Path to the data root")
     parser.add_argument("--out_data_root", type=str, required=True, help="Path to the output data root")
-    parser.add_argument("--gridsize", type=int, default=256, help="Voxel grid size")    
+    parser.add_argument("--gridsize", type=int, default=128, help="Voxel grid size (128 for ShapeNetCore v2)")
     args = parser.parse_args()
 
     in_data_root = args.in_data_root

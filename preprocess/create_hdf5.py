@@ -21,8 +21,11 @@ def main(
         for split in splits:
             shape_ids = get_split_shape_ids(path=f"{cat_out_path}/split.json", split_type=split)
 
-            data = dict()
-            data["points"], data["values"], data["voxels"] = [], [], []
+            # load scale factors from the PC HDF5 (created by create_shapenet_data.py)
+            pc_hdf5_path = f"{cat_out_path}/{cat}_{split}_pc.hdf5"
+            pc_hdf5 = h5py.File(pc_hdf5_path, 'r')
+            scale_data = pc_hdf5['scale'][:]
+            pc_hdf5.close()
 
             outfilepath = f"{cat_out_path}/{cat}_{split}_vox.hdf5"
 
@@ -33,6 +36,7 @@ def main(
                 query_pts_hdf5 = f.create_dataset("points", shape=(num_shapes, npoints, 3), dtype=np.float32, compression="gzip", chunks=(1, npoints, 3))
                 occ_pts_hdf5 = f.create_dataset("values", shape=(num_shapes, npoints, 1), dtype=np.bool_, compression="gzip", chunks=(1, npoints, 1))
                 vox_pts_hdf5 = f.create_dataset("voxels", shape=(num_shapes, gridsize, gridsize, gridsize), dtype=np.bool_, compression="gzip", chunks=(1, gridsize, gridsize, gridsize))
+                scale_hdf5 = f.create_dataset("scale", data=scale_data, dtype=np.float32)
 
                 with tqdm.tqdm(total=len(shape_ids), desc=f"Processing {cat}, split {split}") as pbar:
                     for i, shape_id in enumerate(shape_ids):
@@ -40,7 +44,7 @@ def main(
                         
                         query_pts_path = os.path.join(shape_id_path, "query_pts.npy" )
                         occ_gt_path = os.path.join(shape_id_path, "occ_gt.npy")
-                        voxel_path = os.path.join(shape_id_path, "voxelized", f"fullmesh_norm.obj_{gridsize}_solid.binvox")
+                        voxel_path = os.path.join(shape_id_path, "models", "model_normalized.solid.binvox")
 
                         with open(voxel_path, "rb") as f:
                             voxels = read_as_3d_array(f)
@@ -59,7 +63,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--in_data_root", type=str, required=True, help="Path to the data root")
     parser.add_argument("--out_data_root", type=str, required=True, help="Path to the output data root")
-    parser.add_argument("--gridsize", type=int, default=256, help="Voxel grid size")    
+    parser.add_argument("--gridsize", type=int, default=128, help="Voxel grid size (128 for ShapeNetCore v2)")
     args = parser.parse_args()
 
     in_data_root = args.in_data_root

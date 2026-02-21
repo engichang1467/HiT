@@ -27,7 +27,7 @@ def main(
                     for i, shape_id in enumerate(shape_ids):
                         mesh_group = f.create_group(f"{shape_id}")
                         shape_id_path = os.path.join(cat_in_path, shape_id) 
-                        mesh_path = os.path.join(shape_id_path, "fullmesh_norm.obj")
+                        mesh_path = os.path.join(shape_id_path, "models", "model_normalized.obj")
                         mesh_obj = trimesh.load(mesh_path, force="mesh", process=False)
                         mesh_group.create_dataset("vertices", data=mesh_obj.vertices, compression="gzip", dtype="float32")
                         mesh_group.create_dataset("faces", data=mesh_obj.faces, compression="gzip", dtype="int32")                        
